@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Grade Calculator</title>
+  <style>
+    /* تصميم عام للصفحة */
+    body {
+      background: #f5f5f5; /* تغيير لون الخلفية */
+      margin: 0;
+      padding: 20px 10px;
+      font-family: 'Segoe UI', Tahoma, sans-serif; /* تغيير الخط */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      touch-action: manipulation;
+    }
+
+    /* تصميم الحاوية الرئيسية */
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background: #fff;
+      border-radius: 15px;
+      padding: 20px 15px;
+      box-sizing: border-box;
+      text-align: center;
+      display: none; /* مخفي حتى قبول الشروط */
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* إضافة ظل */
+      border: 1px solid #e0e0e0; /* إطار خفيف */
+    }
+
+    /* تصميم نافذة الشروط */
+    .terms-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.85); /* خلفية داكنة أكثر */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .terms-content {
+      background-color: #fff;
+      border: 3px solid #d90000;
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .terms-title {
+      color: #d90000;
+      font-size: 26px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .terms-section {
+      margin-bottom: 20px;
+      text-align: right;
+      padding: 0 10px;
+    }
+
+    .terms-section-title {
+      font-weight: bold;
+      color: #d90000;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .terms-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .terms-footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    .skip-btn {
+      background: #d90000;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      cursor: pointer;
+      font-size: 15px;
+      border-radius: 25px;
+      margin-top: 20px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .skip-btn:hover {
+      background: #b80000;
+      transform: translateY(-2px);
+    }
+
+    .developer-signature {
+      font-family: 'Courier New', monospace;
+      font-size: 20px;
+      margin-top: 15px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* تصميم العناوين */
+    h2 {
+      color: #d90000;
+      margin-bottom: 10px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    h4 {
+      margin: 0 0 25px;
+      color: #555;
+      font-weight: normal;
+      font-size: 16px;
+    }
+
+    /* تصميم مواد الدراسة */
+    .subject-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 18px;
+      border: 2px solid #ddd;
+      border-radius: 15px;
+      padding: 15px;
+      background: #fff;
+      transition: all 0.3s;
+    }
+
+    .subject-container:hover {
+      border-color: #d90000;
+      box-shadow: 0 2px 8px rgba(217,0,0,0.1);
+    }
+
+    .subject-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .subject-name {
+      font-weight: bold;
+      font-size: 17px;
+      color: #333;
+    }
+
+    .subject-coefficient {
+      background: #f0f0f0;
+      padding: 5px 12px;
+      border-radius: 15px;
+      font-size: 14px;
+      color: #555;
+      font-weight: bold;
+    }
+
+    .grades-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      gap: 5px;
+    }
+
+    .grade-input {
+      width: 42px;
+      padding: 7px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      text-align: center;
+      outline: none;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .grade-input:focus {
+      border-color: #d90000;
+      box-shadow: 0 0 0 2px rgba(217,0,0,0.1);
+    }
+
+    .subject-result {
+      margin-top: 12px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-weight: bold;
+      direction: ltr;
+      color: #333;
+    }
+
+    /* تصميم قسم النتيجة النهائية */
+    .final-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 30px;
+      border: 2px solid #ddd;
+      border-radius: 15px;
+      padding: 15px;
+      background: #fff;
+    }
+
+    .final-result {
+      font-weight: bold;
+      font-size: 17px;
+      color: #d90000;
+    }
+
+    .calc-button {
+      background: #d90000;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 25px;
+      transition: all 0.3s;
+      font-weight: bold;
+    }
+
+    .calc-button:hover {
+      background: #b80000;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* تصميم تذييل الصفحة */
+    .developer-note {
+      font-size: 13px;
+      color: #777;
+      margin-top: 25px;
+      font-weight: bold;
+    }
+
+    .instagram-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+      color: #000;
+      padding: 8px;
+      border-radius: 50%;
+      text-decoration: none;
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      width: 36px;
+      height: 36px;
+      transition: all 0.3s;
+    }
+
+    .instagram-btn:hover {
+      background: #e0e0e0;
+      transform: scale(1.1);
+    }
+
+    .instagram-btn img {
+      width: 20px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- نافذة الشروط والاحكام -->
+  <div class="terms-modal" id="termsModal">
+    <div class="terms-content">
+      <div class="terms-title">شروط وتعليمات</div>
+      
+      <div class="terms-section">
+        <div class="terms-section-title">نصائح:</div>
+        <div class="terms-text">
+          ¤ في حال اردت تخطي هذا اضغط مرة واحدة في أي مكان<br>
+          ¤ في حال لم ترد حساب الفروض وأردت حساب معدل المادة مباشرة ادخل نقطة المادة في أي خانة وحدها<br>
+          ¤ في حال وجدت معدل غير متوقع أو غريب تأكد من المعطيات التي أدخلتها والمواد التي أدخلتها<br>
+          ¤ في حال كنت معفى من مادة ما لا تدخل بياناتها والموقع سيعتبرها غير موجودة (مثلا التربية البدنية)<br>
+          ¤ في حال واجهتك مشاكل أو أردت اقتراح أفكار على المطور لزيادتها تواصل معه عبر حسابه في انستغرام الموجود أسفل الصفحة
+        </div>
+      </div>
+      
+      <div class="terms-section">
+        <div class="terms-section-title">حول:</div>
+        <div class="terms-text">
+          ¤ هذا الموقع تم عمله خصيصا لنقط الجدع المشترك التكنولوجي<br>
+          ¤ تمت برمجته وفقا لخوارزميات وطرق عمل موقع مسار<br>
+          ¤ تم فيه تصحيح أغلب الأخطاء المنتشرة في التطبيقات والمواقع المشابهة<br>
+          ¤ تم وضع بصمة خاصة من طرف مطور الموقع
+        </div>
+      </div>
+      
+      <div class="developer-signature">ADCH</div>
+      
+      <button class="skip-btn" id="skipBtn">موافق - متابعة</button>
+      <div class="terms-footer">اضغط مرة واحدة في أي مكان للمرور</div>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي للآلة الحاسبة -->
+  <div class="container" id="mainContainer">
+    <h2>Grade Calculator</h2>
+    <h4>أدخل النقاط في الخانات المخصصة</h4>
+    
+    <div id="subjectsContainer">
+      <!-- قائمة المواد الدراسية -->
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">علوم المهندس</span>
+          <span class="subject-coefficient">معامل: 4</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-0">0.00</div>
+      </div>
+      
+      <!-- باقي المواد الدراسية -->
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">الاجتماعيات</span>
+          <span class="subject-coefficient">معامل: 2</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-1">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">التربية الإسلامية</span>
+          <span class="subject-coefficient">معامل: 2</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-2">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">التربية البدنية</span>
+          <span class="subject-coefficient">معامل: 2</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-3">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">الرياضيات</span>
+          <span class="subject-coefficient">معامل: 4</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-4">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">الفلسفة</span>
+          <span class="subject-coefficient">معامل: 2</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-5">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">الفيزياء</span>
+          <span class="subject-coefficient">معامل: 4</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-6">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">اللغة الإنجليزية</span>
+          <span class="subject-coefficient">معامل: 3</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-7">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">اللغة العربية</span>
+          <span class="subject-coefficient">معامل: 2</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-8">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">اللغة الفرنسية</span>
+          <span class="subject-coefficient">معامل: 3</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-9">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">المعلوميات</span>
+          <span class="subject-coefficient">معامل: 3</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-10">0.00</div>
+      </div>
+      
+      <div class="subject-container">
+        <div class="subject-header">
+          <span class="subject-name">المواظبة والسلوك</span>
+          <span class="subject-coefficient">معامل: 1</span>
+        </div>
+        <div class="grades-row">
+          <input type="number" class="grade-input" placeholder="1" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="2" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="3" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="4" min="0" max="20">
+          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+        </div>
+        <div class="subject-result" id="result-11">0.00</div>
+      </div>
+    </div>
+
+    <!-- قسم النتيجة النهائية -->
+    <div class="final-row">
+      <button class="calc-button" onclick="calculateGrades()">Calculate</button>
+      <div class="final-result" id="finalAverageDisplay">المعدل النهائي: 0.00</div>
+    </div>
+
+    <!-- تذييل الصفحة -->
+    <div class="developer-note">by ADCH</div>
+    <a href="https://www.instagram.com/_ad__ch_?igsh=MWszOHdtczhraTF0Yw==" target="_blank" class="instagram-btn">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
+    </a>
+  </div>
+
+  <script>
+    // كود نافذة الشروط
+    const termsModal = document.getElementById('termsModal');
+    const mainContainer = document.getElementById('mainContainer');
+    const skipBtn = document.getElementById('skipBtn');
+    
+    // عرض نافذة الشروط عند التحميل
+    termsModal.style.display = 'flex';
+    
+    // التخطي بالضغط مرة واحدة في أي مكان
+    termsModal.addEventListener('click', acceptTerms);
+    
+    // التخطي بالضغط على الزر
+    skipBtn.addEventListener('click', acceptTerms);
+    
+    // دالة قبول الشروط وإخفاء النافذة
+    function acceptTerms() {
+      termsModal.style.display = 'none';
+      mainContainer.style.display = 'block';
+    }
+
+    // كود الآلة الحاسبة
+    function calculateGrades() {
+      const subjects = document.querySelectorAll('.subject-container');
+      let totalWeighted = 0, totalCoefficient = 0;
+
+      subjects.forEach((subject, index) => {
+        const inputs = subject.querySelectorAll('.grade-input');
+        const coefficient = parseFloat(subject.querySelector('.subject-coefficient').textContent.split(':')[1].trim());
+        let sumGrades = 0, countGrades = 0;
+
+        inputs.forEach(input => {
+          const value = parseFloat(input.value);
+          if (!isNaN(value) && value >= 0 && value <= 20) {
+            sumGrades += value;
+            countGrades++;
+          }
+        });
+
+        const subjectAvg = countGrades > 0 ? (sumGrades / countGrades) : 0;
+        document.getElementById(`result-${index}`).textContent = subjectAvg.toFixed(2);
+
+        if (countGrades > 0) {
+          totalWeighted += subjectAvg * coefficient;
+          totalCoefficient += coefficient;
+        }
+      });
+
+      const finalAverage = totalCoefficient ? (totalWeighted / totalCoefficient).toFixed(2) : '0.00';
+      document.getElementById('finalAverageDisplay').textContent = 'المعدل النهائي: ' + finalAverage;
+    }
+
+    // حساب المعدل عند الخروج من حقل الإدخال
+    document.querySelectorAll('.grade-input').forEach(input => {
+      input.addEventListener('blur', calculateGrades);
+    });
+
+    // منع إرسال النموذج عند الضغط على إنتر
+    document.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        calculateGrades();
+      }
+    });
+
+    // التحقق من صحة المدخلات
+    document.querySelectorAll('.grade-input').forEach(input => {
+      input.addEventListener('input', function() {
+        if (this.value > 20) {
+          this.value = 20;
+        } else if (this.value < 0) {
+          this.value = 0;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
