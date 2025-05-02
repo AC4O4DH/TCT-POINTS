@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Grade Calculator</title>
   <style>
-    /* تصميم عام للصفحة */
+    /* Page design */
     body {
-      background: #f5f5f5; /* تغيير لون الخلفية */
+      background: #f5f5f5;
       margin: 0;
       padding: 20px 10px;
-      font-family: 'Segoe UI', Tahoma, sans-serif; /* تغيير الخط */
+      font-family: 'Cairo', sans-serif;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -18,7 +19,7 @@
       touch-action: manipulation;
     }
 
-    /* تصميم الحاوية الرئيسية */
+    /* Main container design */
     .container {
       width: 100%;
       max-width: 450px;
@@ -27,103 +28,14 @@
       padding: 20px 15px;
       box-sizing: border-box;
       text-align: center;
-      display: none; /* مخفي حتى قبول الشروط */
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* إضافة ظل */
-      border: 1px solid #e0e0e0; /* إطار خفيف */
+      display: block;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border: 1px solid #e0e0e0;
     }
 
-    /* تصميم نافذة الشروط */
-    .terms-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0,0,0,0.85); /* خلفية داكنة أكثر */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .terms-content {
-      background-color: #fff;
-      border: 3px solid #d90000;
-      border-radius: 12px;
-      padding: 25px;
-      width: 90%;
-      max-width: 500px;
-      max-height: 80vh;
-      overflow-y: auto;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-
-    .terms-title {
-      color: #d90000;
-      font-size: 26px;
-      margin-bottom: 20px;
-      font-weight: bold;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #f0f0f0;
-    }
-
-    .terms-section {
-      margin-bottom: 20px;
-      text-align: right;
-      padding: 0 10px;
-    }
-
-    .terms-section-title {
-      font-weight: bold;
-      color: #d90000;
-      margin-bottom: 8px;
-      font-size: 18px;
-    }
-
-    .terms-text {
-      font-size: 15px;
-      line-height: 1.6;
-      color: #444;
-    }
-
-    .terms-footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #777;
-      padding-top: 10px;
-      border-top: 1px solid #eee;
-    }
-
-    .skip-btn {
-      background: #d90000;
-      color: white;
-      border: none;
-      padding: 10px 25px;
-      cursor: pointer;
-      font-size: 15px;
-      border-radius: 25px;
-      margin-top: 20px;
-      font-weight: bold;
-      transition: all 0.3s;
-    }
-
-    .skip-btn:hover {
-      background: #b80000;
-      transform: translateY(-2px);
-    }
-
-    .developer-signature {
-      font-family: 'Courier New', monospace;
-      font-size: 20px;
-      margin-top: 15px;
-      color: #333;
-      font-weight: bold;
-    }
-
-    /* تصميم العناوين */
+    /* Headings design */
     h2 {
-      color: #d90000;
+      color: #0066cc;
       margin-bottom: 10px;
       font-size: 26px;
       font-weight: 700;
@@ -136,7 +48,7 @@
       font-size: 16px;
     }
 
-    /* تصميم مواد الدراسة */
+    /* Subjects design */
     .subject-container {
       display: flex;
       flex-direction: column;
@@ -149,8 +61,8 @@
     }
 
     .subject-container:hover {
-      border-color: #d90000;
-      box-shadow: 0 2px 8px rgba(217,0,0,0.1);
+      border-color: #0066cc;
+      box-shadow: 0 2px 8px rgba(0,102,204,0.1);
     }
 
     .subject-header {
@@ -194,8 +106,8 @@
     }
 
     .grade-input:focus {
-      border-color: #d90000;
-      box-shadow: 0 0 0 2px rgba(217,0,0,0.1);
+      border-color: #0066cc;
+      box-shadow: 0 0 0 2px rgba(0,102,204,0.1);
     }
 
     .subject-result {
@@ -209,7 +121,7 @@
       color: #333;
     }
 
-    /* تصميم قسم النتيجة النهائية */
+    /* Final result section */
     .final-row {
       display: flex;
       justify-content: space-between;
@@ -224,11 +136,11 @@
     .final-result {
       font-weight: bold;
       font-size: 17px;
-      color: #d90000;
+      color: #0066cc;
     }
 
     .calc-button {
-      background: #d90000;
+      background: #0066cc;
       color: white;
       border: none;
       padding: 12px 25px;
@@ -240,12 +152,12 @@
     }
 
     .calc-button:hover {
-      background: #b80000;
+      background: #005bb5;
       transform: translateY(-2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    /* تصميم تذييل الصفحة */
+    /* Page footer */
     .developer-note {
       font-size: 13px;
       color: #777;
@@ -253,7 +165,7 @@
       font-weight: bold;
     }
 
-    .instagram-btn {
+    .terms-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -267,64 +179,109 @@
       width: 36px;
       height: 36px;
       transition: all 0.3s;
+      font-weight: bold;
+      font-size: 16px;
     }
 
-    .instagram-btn:hover {
+    .terms-btn:hover {
       background: #e0e0e0;
       transform: scale(1.1);
     }
 
-    .instagram-btn img {
-      width: 20px;
-      height: 20px;
+    /* Terms modal styles */
+    .terms-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .terms-content {
+      background-color: #fff;
+      border: 3px solid #0066cc;
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .terms-title {
+      color: #0066cc;
+      font-size: 26px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .terms-section {
+      margin-bottom: 20px;
+      text-align: left;
+      padding: 0 10px;
+    }
+
+    .terms-section-title {
+      font-weight: bold;
+      color: #0066cc;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .terms-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .terms-footer {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+
+    .close-btn {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 10px 25px;
+      cursor: pointer;
+      font-size: 15px;
+      border-radius: 25px;
+      margin-top: 20px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #005bb5;
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
-  <!-- نافذة الشروط والاحكام -->
-  <div class="terms-modal" id="termsModal">
-    <div class="terms-content">
-      <div class="terms-title">شروط وتعليمات</div>
-      
-      <div class="terms-section">
-        <div class="terms-section-title">نصائح:</div>
-        <div class="terms-text">
-          ¤ في حال اردت تخطي هذا اضغط مرة واحدة في أي مكان<br>
-          ¤ في حال لم ترد حساب الفروض وأردت حساب معدل المادة مباشرة ادخل نقطة المادة في أي خانة وحدها<br>
-          ¤ في حال وجدت معدل غير متوقع أو غريب تأكد من المعطيات التي أدخلتها والمواد التي أدخلتها<br>
-          ¤ في حال كنت معفى من مادة ما لا تدخل بياناتها والموقع سيعتبرها غير موجودة (مثلا التربية البدنية)<br>
-          ¤ في حال واجهتك مشاكل أو أردت اقتراح أفكار على المطور لزيادتها تواصل معه عبر حسابه في انستغرام الموجود أسفل الصفحة
-        </div>
-      </div>
-      
-      <div class="terms-section">
-        <div class="terms-section-title">حول:</div>
-        <div class="terms-text">
-          ¤ هذا الموقع تم عمله خصيصا لنقط الجدع المشترك التكنولوجي<br>
-          ¤ تمت برمجته وفقا لخوارزميات وطرق عمل موقع مسار<br>
-          ¤ تم فيه تصحيح أغلب الأخطاء المنتشرة في التطبيقات والمواقع المشابهة<br>
-          ¤ تم وضع بصمة خاصة من طرف مطور الموقع
-        </div>
-      </div>
-      
-      <div class="developer-signature">ADCH</div>
-      
-      <button class="skip-btn" id="skipBtn">موافق - متابعة</button>
-      <div class="terms-footer">اضغط مرة واحدة في أي مكان للمرور</div>
-    </div>
-  </div>
-
-  <!-- المحتوى الرئيسي للآلة الحاسبة -->
+  <!-- Main calculator content -->
   <div class="container" id="mainContainer">
     <h2>Grade Calculator</h2>
-    <h4>أدخل النقاط في الخانات المخصصة</h4>
+    <h4>Enter grades in the designated fields</h4>
     
     <div id="subjectsContainer">
-      <!-- قائمة المواد الدراسية -->
+      <!-- Subjects list -->
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">علوم المهندس</span>
-          <span class="subject-coefficient">معامل: 4</span>
+          <span class="subject-coefficient">Coefficient: 4</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -336,11 +293,11 @@
         <div class="subject-result" id="result-0">0.00</div>
       </div>
       
-      <!-- باقي المواد الدراسية -->
+      <!-- Other subjects -->
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">الاجتماعيات</span>
-          <span class="subject-coefficient">معامل: 2</span>
+          <span class="subject-coefficient">Coefficient: 2</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -355,7 +312,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">التربية الإسلامية</span>
-          <span class="subject-coefficient">معامل: 2</span>
+          <span class="subject-coefficient">Coefficient: 2</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -370,7 +327,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">التربية البدنية</span>
-          <span class="subject-coefficient">معامل: 2</span>
+          <span class="subject-coefficient">Coefficient: 2</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -385,7 +342,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">الرياضيات</span>
-          <span class="subject-coefficient">معامل: 4</span>
+          <span class="subject-coefficient">Coefficient: 4</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -400,7 +357,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">الفلسفة</span>
-          <span class="subject-coefficient">معامل: 2</span>
+          <span class="subject-coefficient">Coefficient: 2</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -415,7 +372,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">الفيزياء</span>
-          <span class="subject-coefficient">معامل: 4</span>
+          <span class="subject-coefficient">Coefficient: 4</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -430,7 +387,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">اللغة الإنجليزية</span>
-          <span class="subject-coefficient">معامل: 3</span>
+          <span class="subject-coefficient">Coefficient: 3</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -445,7 +402,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">اللغة العربية</span>
-          <span class="subject-coefficient">معامل: 2</span>
+          <span class="subject-coefficient">Coefficient: 2</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -460,7 +417,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">اللغة الفرنسية</span>
-          <span class="subject-coefficient">معامل: 3</span>
+          <span class="subject-coefficient">Coefficient: 3</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -475,7 +432,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">المعلوميات</span>
-          <span class="subject-coefficient">معامل: 3</span>
+          <span class="subject-coefficient">Coefficient: 3</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -490,7 +447,7 @@
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">المواظبة والسلوك</span>
-          <span class="subject-coefficient">معامل: 1</span>
+          <span class="subject-coefficient">Coefficient: 1</span>
         </div>
         <div class="grades-row">
           <input type="number" class="grade-input" placeholder="1" min="0" max="20">
@@ -503,41 +460,48 @@
       </div>
     </div>
 
-    <!-- قسم النتيجة النهائية -->
+    <!-- Final result section -->
     <div class="final-row">
       <button class="calc-button" onclick="calculateGrades()">Calculate</button>
-      <div class="final-result" id="finalAverageDisplay">المعدل النهائي: 0.00</div>
+      <div class="final-result" id="finalAverageDisplay">Final Average: 0.00</div>
     </div>
 
-    <!-- تذييل الصفحة -->
+    <!-- Page footer -->
     <div class="developer-note">by ADCH</div>
-    <a href="https://www.instagram.com/_ad__ch_?igsh=MWszOHdtczhraTF0Yw==" target="_blank" class="instagram-btn">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
-    </a>
+    <button class="terms-btn" id="termsBtn">?</button>
+  </div>
+
+  <!-- Terms modal (hidden by default) -->
+  <div class="terms-modal" id="termsModal">
+    <div class="terms-content">
+      <div class="terms-title">Terms and Instructions</div>
+      
+      <div class="terms-section">
+        <div class="terms-section-title">Tips:</div>
+        <div class="terms-text">
+          ¤ If you want to skip calculating assignments and calculate the subject average directly, enter the subject grade in any single field<br>
+          ¤ If you get unexpected results, double-check the data you entered<br>
+          ¤ If you're exempt from a subject (like Physical Education), don't enter any data for it<br>
+        </div>
+      </div>
+      
+      <div class="terms-section">
+        <div class="terms-section-title">About:</div>
+        <div class="terms-text">
+          ¤ This calculator is specifically designed for the Technological Baccalaureate<br>
+          ¤ It follows the same calculation methods used by the official platform<br>
+          ¤ Most common errors found in similar apps have been corrected<br>
+          ¤ Developed with a personal touch by the creator
+        </div>
+      </div>
+      
+      <button class="close-btn" id="closeBtn">Close</button>
+      <div class="terms-footer">Click anywhere outside this box to close</div>
+    </div>
   </div>
 
   <script>
-    // كود نافذة الشروط
-    const termsModal = document.getElementById('termsModal');
-    const mainContainer = document.getElementById('mainContainer');
-    const skipBtn = document.getElementById('skipBtn');
-    
-    // عرض نافذة الشروط عند التحميل
-    termsModal.style.display = 'flex';
-    
-    // التخطي بالضغط مرة واحدة في أي مكان
-    termsModal.addEventListener('click', acceptTerms);
-    
-    // التخطي بالضغط على الزر
-    skipBtn.addEventListener('click', acceptTerms);
-    
-    // دالة قبول الشروط وإخفاء النافذة
-    function acceptTerms() {
-      termsModal.style.display = 'none';
-      mainContainer.style.display = 'block';
-    }
-
-    // كود الآلة الحاسبة
+    // Calculator code
     function calculateGrades() {
       const subjects = document.querySelectorAll('.subject-container');
       let totalWeighted = 0, totalCoefficient = 0;
@@ -565,15 +529,15 @@
       });
 
       const finalAverage = totalCoefficient ? (totalWeighted / totalCoefficient).toFixed(2) : '0.00';
-      document.getElementById('finalAverageDisplay').textContent = 'المعدل النهائي: ' + finalAverage;
+      document.getElementById('finalAverageDisplay').textContent = 'Final Average: ' + finalAverage;
     }
 
-    // حساب المعدل عند الخروج من حقل الإدخال
+    // Calculate when leaving input field
     document.querySelectorAll('.grade-input').forEach(input => {
       input.addEventListener('blur', calculateGrades);
     });
 
-    // منع إرسال النموذج عند الضغط على إنتر
+    // Prevent form submission on Enter
     document.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -581,7 +545,7 @@
       }
     });
 
-    // التحقق من صحة المدخلات
+    // Validate inputs
     document.querySelectorAll('.grade-input').forEach(input => {
       input.addEventListener('input', function() {
         if (this.value > 20) {
@@ -590,6 +554,25 @@
           this.value = 0;
         }
       });
+    });
+
+    // Terms modal functionality
+    const termsModal = document.getElementById('termsModal');
+    const termsBtn = document.getElementById('termsBtn');
+    const closeBtn = document.getElementById('closeBtn');
+
+    termsBtn.addEventListener('click', function() {
+      termsModal.style.display = 'flex';
+    });
+
+    closeBtn.addEventListener('click', function() {
+      termsModal.style.display = 'none';
+    });
+
+    termsModal.addEventListener('click', function(e) {
+      if (e.target === termsModal) {
+        termsModal.style.display = 'none';
+      }
     });
   </script>
 </body>
