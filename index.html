@@ -4,59 +4,277 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Grade Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* Page design */
+    /* CSS Variables for Themes */
+    :root {
+      /* Dark Theme */
+      --body-bg-start: #0a0a0a; /* Deep Black */
+      --body-bg-end: #1a1a1a;   /* Slightly lighter Black */
+      --container-bg: #111111;  /* Dark Grey/Black for container */
+      --container-border: #333333; /* Darker border */
+      --text-color: #f0f0f0;    /* Light Grey text */
+      --heading-color: #ff0000; /* Bright Red Heading */
+      --subheading-color: #cccccc; /* Lighter grey subheading */
+      --subject-container-bg: #1a1a1a; /* Darker subject container */
+      --subject-container-border: #444444; /* Darker border */
+      --input-bg: #000000;      /* Black input background */
+      --input-border: #666666; /* Grey input border */
+      --input-placeholder: #aaaaaa; /* Light grey placeholder */
+      --input-focus-border: #ff0000; /* Bright Red focus border */
+      --subject-result-bg: #333333; /* Default result background */
+      --final-row-bg: #1a1a1a; /* Final row background */
+      --final-row-border: #444444; /* Final row border */
+      --final-average-bg: #333333; /* Default final average background */
+      --calc-button-bg: #ff0000; /* Red for calculate button */
+      --calc-button-hover-bg: #cc0000; /* Darker red on hover */
+      --terms-btn-bg: #007bff; /* Blue for terms button */
+      --terms-btn-hover-bg: #0056b3; /* Darker blue on hover */
+      --terms-modal-bg: rgba(0,0,0,0.9);
+      --terms-content-bg: #1a1a1a; /* Darker modal content */
+      --terms-content-border: #ff0000; /* Red modal border */
+      --terms-title-color: #ff0000; /* Red modal title */
+      --terms-text-color: #e0e0e0; /* Light grey text */
+      --terms-text-border-right: #555555; /* Dark grey border */
+      --terms-footer-color: #999999; /* Lighter grey footer */
+      --close-btn-bg: #ff0000; /* Red for close button */
+      --close-btn-hover-bg: #cc0000; /* Darker red on hover */
+      --instagram-btn-bg: #ff0000; /* Red for Instagram button */
+      --instagram-btn-hover-bg: #cc0000; /* Darker red on hover */
+      --header-icon-color: #ff0000;
+      --loading-spinner-color: #e0e0e0;
+      --warning-color: #ffa500; /* Orange for warnings */
+
+      /* Grade specific colors */
+      --grade-high-bg: #28a745; /* Green for high grades */
+      --grade-medium-bg: #007bff; /* Blue for medium grades */
+      --grade-low-bg: #dc3545; /* Red for low grades */
+    }
+
+    /* Light Theme */
+    body.light-theme {
+      --body-bg-start: #ffffff; /* White */
+      --body-bg-end: #f5f5f5;   /* Off-white */
+      --container-bg: #ffffff;  /* White for container */
+      --container-border: #dddddd; /* Light grey border */
+      --text-color: #333333;    /* Dark Grey text */
+      --heading-color: #ff0000; /* Bright Red Heading */
+      --subheading-color: #666666; /* Darker grey subheading */
+      --subject-container-bg: #f8f8f8; /* Lighter subject container */
+      --subject-container-border: #e0e0e0; /* Lighter border */
+      --input-bg: #ffffff;      /* White input background */
+      --input-border: #cccccc; /* Light grey input border */
+      --input-placeholder: #888888; /* Dark grey placeholder */
+      --input-focus-border: #ff0000; /* Bright Red focus border */
+      --subject-result-bg: #eeeeee; /* Default result background */
+      --final-row-bg: #f8f8f8; /* Final row background */
+      --final-row-border: #e0e0e0; /* Final row border */
+      --final-average-bg: #eeeeee; /* Default final average background */
+      --calc-button-bg: #ff0000;
+      --calc-button-hover-bg: #cc0000;
+      --terms-btn-bg: #007bff;
+      --terms-btn-hover-bg: #0056b3;
+      --terms-modal-bg: rgba(255,255,255,0.9);
+      --terms-content-bg: #ffffff;
+      --terms-content-border: #ff0000;
+      --terms-title-color: #ff0000;
+      --terms-text-color: #444444;
+      --terms-text-border-right: #bbbbbb;
+      --terms-footer-color: #777777;
+      --close-btn-bg: #ff0000;
+      --close-btn-hover-bg: #cc0000;
+      --instagram-btn-bg: #ff0000;
+      --instagram-btn-hover-bg: #cc0000;
+      --header-icon-color: #ff0000;
+      --loading-spinner-color: #333;
+      --warning-color: #ffa500;
+
+      /* Grade specific colors for light theme */
+      --grade-high-bg: #28a745;
+      --grade-medium-bg: #007bff;
+      --grade-low-bg: #dc3545;
+    }
+
+    /* Base styles */
     body {
-      background: #f5f5f5;
+      background: linear-gradient(135deg, var(--body-bg-start) 0%, var(--body-bg-end) 100%);
       margin: 0;
       padding: 20px 10px;
       font-family: 'Segoe UI', Tahoma, sans-serif;
       display: flex;
+      flex-direction: column;
       justify-content: center;
-      align-items: flex-start;
+      align-items: center;
       min-height: 100vh;
       touch-action: manipulation;
+      color: var(--text-color);
+      transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* Main container design */
+    /* New Animated Background */
+    .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -2; /* Ensure it's behind everything */
+        overflow: hidden; /* Prevent symbols from going outside */
+        pointer-events: none; /* Allow clicks to pass through */
+    }
+
+    .animated-bg span {
+        position: absolute;
+        font-size: 20px; /* Adjust size as needed */
+        opacity: 0.3; /* Adjust opacity */
+        animation: float 20s linear infinite;
+        user-select: none; /* Prevent text selection */
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(100vh) rotate(0deg);
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 0.1;
+        }
+        100% {
+            transform: translateY(-10vh) rotate(720deg);
+            opacity: 0.3;
+        }
+    }
+
+    @keyframes bg-pan {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 100% 100%; }
+    }
+
+    @keyframes pattern-move {
+      from { background-position: 0 0; }
+      to { background-position: 100% 100%; }
+    }
+
+    /* Mobile Rotation Message */
+    .rotation-message {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 14px;
+      display: none;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      max-width: 90%;
+      direction: rtl;
+    }
+
+    @media (max-width: 768px) and (orientation: portrait) {
+      .rotation-message.mobile-portrait {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @media (min-width: 769px) and (orientation: portrait) {
+      .rotation-message.desktop-portrait {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Main container design - Modified to remove border and background */
     .container {
       width: 100%;
       max-width: 450px;
-      background: #fff;
-      border-radius: 15px;
+      /* Removed background, border, and box-shadow */
+      border-radius: 15px; /* Keep border-radius for other elements within */
       padding: 20px 15px;
       box-sizing: border-box;
       text-align: center;
       display: block;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      border: 1px solid #e0e0e0;
       position: relative;
       overflow: hidden;
+      transition: all 0.5s ease-in-out; /* Keep transition for other properties */
+      animation: container-entry 0.8s ease-out forwards;
+      perspective: 1000px;
     }
 
+    @keyframes container-entry {
+      from { opacity: 0; transform: translateY(20px) rotateX(-10deg); }
+      to { opacity: 1; transform: translateY(0) rotateX(0deg); }
+    }
+
+    /* Removed .container::before for the top gradient border */
     .container::before {
       content: "";
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #d90000, #ff6b6b, #d90000);
+      height: 0; /* Set height to 0 to effectively remove it */
+      background: none; /* Remove background */
+    }
+
+    @keyframes gradient-flow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     /* Headings design */
     h2 {
-      color: #d90000;
+      color: var(--heading-color);
       margin-bottom: 10px;
-      font-size: 28px;
-      font-weight: 800;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-size: 32px; /* Slightly larger */
+      font-weight: 900; /* Bolder */
+      text-shadow: 0 0 10px rgba(255,0,0,0.5); /* Red glow */
+      letter-spacing: 2px; /* More prominent spacing */
+      transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
     }
 
     h4 {
       margin: 0 0 25px;
-      color: #555;
+      color: var(--subheading-color);
       font-weight: normal;
+      font-size: 16px;
+      transition: color 0.5s ease-in-out;
+      direction: rtl;
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--terms-btn-bg); /* Use blue for toggle */
+      color: var(--text-color);
+      border: none;
+      padding: 10px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      transition: background 0.3s ease, transform 0.2s ease, color 0.5s ease-in-out;
+      z-index: 10;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    }
+
+    .theme-toggle i {
       font-size: 16px;
     }
 
@@ -65,19 +283,21 @@
       display: flex;
       flex-direction: column;
       margin-bottom: 20px;
-      border: 2px solid #eaeaea;
+      border: 2px solid var(--subject-container-border);
       border-radius: 15px;
       padding: 15px;
-      background: #fff;
-      transition: all 0.3s ease-out;
+      background: var(--subject-container-bg);
+      transition: all 0.3s ease-out, background 0.5s ease-in-out, border-color 0.5s ease-in-out;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     .subject-container:hover {
-      border-color: #d90000;
-      box-shadow: 0 5px 15px rgba(217,0,0,0.15);
-      transform: translateY(-3px);
+      border-color: var(--heading-color);
+      box-shadow: 0 5px 15px rgba(255,0,0,0.4); /* Red glow on hover */
+      transform: translateY(-3px) scale(1.01); /* Subtle lift */
+      background: var(--subject-container-bg);
     }
 
     .subject-container::after {
@@ -87,13 +307,19 @@
       left: 0;
       right: 0;
       height: 3px;
-      background: linear-gradient(90deg, #d90000, #ff6b6b);
-      opacity: 0;
-      transition: opacity 0.3s;
+      background: var(--heading-color);
+      opacity: 0.7;
+      transition: opacity 0.3s, background 0.5s ease-in-out;
     }
 
     .subject-container:hover::after {
       opacity: 1;
+      animation: border-pulse 1s infinite alternate;
+    }
+
+    @keyframes border-pulse {
+      from { transform: scaleX(0.8); }
+      to { transform: scaleX(1.1); }
     }
 
     .subject-header {
@@ -101,164 +327,238 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 12px;
+      direction: rtl;
     }
 
     .subject-name {
       font-weight: bold;
-      font-size: 17px;
-      color: #333;
+      font-size: 18px; /* Slightly larger */
+      color: var(--text-color);
+      transition: color 0.5s ease-in-out;
     }
 
     .subject-coefficient {
-      background: linear-gradient(to right, #f0f0f0, #e0e0e0);
+      background: var(--subject-result-bg);
       padding: 5px 12px;
       border-radius: 15px;
       font-size: 14px;
-      color: #555;
+      color: var(--text-color); /* Matches general text */
       font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+      animation: pop-in 0.5s ease-out;
+    }
+
+    @keyframes pop-in {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
 
     .grades-row {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       margin-top: 10px;
       gap: 8px;
     }
 
+    .grades-row .grade-input:not(.control-grade) {
+      width: calc(25% - 8px);
+      min-width: 60px;
+    }
+
+    .grades-row .control-grade {
+      width: 100%;
+      margin-top: 10px;
+    }
+
     .grade-input {
-      width: 45px;
       padding: 8px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--input-border);
       border-radius: 12px;
       text-align: center;
       outline: none;
-      font-size: 15px;
+      font-size: 16px; /* Slightly larger font */
       transition: all 0.2s;
-      background: #f9f9f9;
+      background: var(--input-bg);
+      color: var(--text-color);
       font-weight: 600;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); /* Deeper inset shadow */
+      transition: background 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    }
+
+    .grade-input::placeholder {
+      color: var(--input-placeholder);
     }
 
     .grade-input:focus {
-      border-color: #d90000;
-      box-shadow: 0 0 0 3px rgba(217,0,0,0.1);
-      background: #fff;
+      border-color: var(--input-focus-border);
+      box-shadow: 0 0 0 3px rgba(255,0,0,0.3), 0 0 15px rgba(255,0,0,0.5); /* Red glow on focus */
+      background: var(--subject-container-bg); /* Lighter background on focus */
+      transform: scale(1.02);
     }
 
     .subject-result {
       margin-top: 15px;
       padding: 10px;
-      background: linear-gradient(to right, #f9f9f9, #f0f0f0);
+      background: var(--subject-result-bg);
       border-radius: 12px;
-      border: 1px solid #e0e0e0;
+      border: 1px solid var(--subject-result-bg);
       font-weight: bold;
       direction: ltr;
-      color: #333;
-      font-size: 15px;
+      color: var(--text-color); /* Default text color */
+      font-size: 16px; /* Slightly larger */
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+      transition: background 0.5s ease-in-out, border-color 0.5s ease-in-out, color 0.5s ease-in-out;
+      animation: slide-in 0.5s ease-out;
+      position: relative;
+    }
+
+    .subject-result.warning {
+        background: var(--warning-color);
+        color: black; /* Ensure text is visible on warning background */
+        border-color: var(--warning-color);
+        animation: pulse-warning 1s infinite alternate;
+    }
+
+    @keyframes pulse-warning {
+        from { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,165,0,0.4); }
+        to { transform: scale(1.01); box-shadow: 0 0 0 5px rgba(255,165,0,0); }
+    }
+
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
     }
 
     /* Final result section */
     .final-row {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
       margin-top: 30px;
-      border: 2px solid #eaeaea;
+      border: 2px solid var(--final-row-border);
       border-radius: 15px;
       padding: 15px;
-      background: #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      background: var(--final-row-bg);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Deeper shadow */
       transition: all 0.3s;
+      animation: fade-in 1s ease-out;
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .final-row:hover {
-      border-color: #d90000;
-      transform: translateY(-2px);
+      border-color: var(--heading-color);
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4); /* Enhanced shadow on hover */
     }
 
-    .final-result {
+    .final-result { /* This class is not used for the main final average display anymore */
       font-weight: bold;
       font-size: 18px;
-      color: #d90000;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      color: var(--heading-color);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      transition: color 0.5s ease-in-out;
     }
 
     .calc-button {
-      background: linear-gradient(to right, #d90000, #ff5252);
+      background: var(--calc-button-bg);
       color: white;
       border: none;
       padding: 12px 28px;
       cursor: pointer;
       font-size: 16px;
       border-radius: 25px;
-      transition: all 0.3s;
+      transition: all 0.3s ease; /* Smoother transition */
       font-weight: bold;
-      box-shadow: 0 4px 8px rgba(217,0,0,0.2);
+      box-shadow: 0 4px 8px rgba(255, 0, 0, 0.4); /* Red shadow */
       position: relative;
       overflow: hidden;
+      letter-spacing: 0.5px;
+      animation: button-bounce 0.6s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    @keyframes button-bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
     }
 
     .calc-button:hover {
-      background: linear-gradient(to right, #b80000, #e53935);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(217,0,0,0.25);
+      background: var(--calc-button-hover-bg);
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 8px 16px rgba(255, 0, 0, 0.6);
     }
 
     .calc-button:active {
-      transform: translateY(0);
-    }
-
-    /* Page footer */
-    .developer-note {
-      font-size: 13px;
-      color: #777;
-      margin-top: 25px;
-      font-weight: bold;
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 2px 4px rgba(255, 0, 0, 0.3);
     }
 
     .terms-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(to right, #f5f5f5, #e0e0e0);
-      color: #000;
+      background: var(--terms-btn-bg); /* Blue for terms */
+      color: white;
       padding: 8px;
       border-radius: 50%;
       text-decoration: none;
       margin-top: 15px;
-      border: 1px solid #ddd;
+      border: 1px solid var(--terms-btn-bg);
       width: 38px;
       height: 38px;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       font-weight: bold;
       font-size: 18px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+      animation: rotate-in 0.7s ease-out;
+    }
+
+    @keyframes rotate-in {
+      from { transform: rotate(-90deg) scale(0); opacity: 0; }
+      to { transform: rotate(0deg) scale(1); opacity: 1; }
     }
 
     .terms-btn:hover {
-      background: linear-gradient(to right, #e0e0e0, #d0d0d0);
-      transform: scale(1.1) rotate(10deg);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      background: var(--terms-btn-hover-bg);
+      transform: scale(1.2) rotate(15deg);
+      box-shadow: 0 6px 12px rgba(0, 123, 255, 0.5); /* Blue shadow */
     }
 
-    /* Terms modal styles */
+    /* Modals styles (Terms) */
     .terms-modal {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0,0,0,0.9);
+      background-color: var(--terms-modal-bg);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(8px);
+      transition: background-color 0.5s ease-in-out;
+      animation: modal-fade-in 0.4s ease-out forwards;
+    }
+
+    @keyframes modal-fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .terms-content {
-      background-color: #fff;
-      border: 4px solid #d90000;
+      background-color: var(--terms-content-bg);
+      border: 4px solid var(--terms-content-border);
       border-radius: 15px;
       padding: 30px;
       width: 90%;
@@ -266,8 +566,16 @@
       max-height: 80vh;
       overflow-y: auto;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.9); /* Stronger shadow */
       position: relative;
+      transition: background-color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+      animation: modal-slide-up 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+      direction: rtl;
+    }
+
+    @keyframes modal-slide-up {
+      from { transform: translateY(50px) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
     }
 
     .terms-content::before {
@@ -277,63 +585,97 @@
       left: 0;
       right: 0;
       height: 5px;
-      background: linear-gradient(90deg, #d90000, #ff6b6b, #d90000);
+      background: linear-gradient(90deg, var(--grade-low-bg), var(--heading-color), var(--grade-low-bg));
+      background-size: 200% 100%;
+      animation: gradient-flow 3s linear infinite;
     }
 
     .terms-title {
-      color: #d90000;
-      font-size: 28px;
+      color: var(--terms-title-color);
+      font-size: 32px; /* Larger title */
       margin-bottom: 25px;
-      font-weight: 800;
+      font-weight: 900; /* Bolder */
       padding-bottom: 10px;
-      border-bottom: 2px solid #f0f0f0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border-bottom: 2px solid var(--subject-container-border);
+      text-shadow: 0 0 8px rgba(255,0,0,0.5); /* Red glow */
+      transition: color 0.5s ease-in-out, border-color 0.5s ease-in-out;
     }
 
     .terms-section {
       margin-bottom: 25px;
-      text-align: left;
+      text-align: right;
       padding: 0 10px;
     }
 
     .terms-section-title {
       font-weight: bold;
-      color: #d90000;
+      color: var(--terms-text-color);
       margin-bottom: 10px;
       font-size: 20px;
       position: relative;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: color 0.5s ease-in-out;
+    }
+
+    .terms-section-title i {
+      font-size: 24px;
+      text-shadow: 0 0 8px rgba(255,204,0,0.5);
+      animation: icon-pulse 2s infinite alternate;
+    }
+    .terms-section-title.about i {
+      color: var(--terms-btn-bg); /* Blue for about icon */
+      text-shadow: 0 0 8px rgba(0,123,255,0.5);
+    }
+     .terms-section-title.tips i { /* Specific color for tips icon in terms modal */
+        color: #ffcc00; /* Yellow, similar to old study tips */
+     }
+
+    @keyframes icon-pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     .terms-section-title::after {
       content: "";
       position: absolute;
       bottom: -3px;
-      left: 0;
+      right: 0;
       width: 50px;
       height: 3px;
-      background: linear-gradient(to right, #d90000, #ff6b6b);
+      background: var(--heading-color);
       border-radius: 3px;
+      animation: underline-grow 1.5s ease-out forwards;
+    }
+
+    @keyframes underline-grow {
+      from { width: 0; }
+      to { width: 50px; }
     }
 
     .terms-text {
       font-size: 16px;
       line-height: 1.7;
-      color: #444;
-      padding-left: 10px;
-      border-left: 3px solid #e0e0e0;
+      color: var(--terms-text-color);
+      padding-right: 10px;
+      border-right: 3px solid var(--terms-text-border-right);
+      transition: color 0.5s ease-in-out, border-color 0.5s ease-in-out;
+      white-space: pre-wrap;
     }
 
     .terms-footer {
       margin-top: 25px;
       font-size: 14px;
-      color: #777;
+      color: var(--terms-footer-color);
       padding-top: 15px;
-      border-top: 1px solid #eee;
+      border-top: 1px solid var(--subject-container-border);
+      transition: color 0.5s ease-in-out, border-color 0.5s ease-in-out;
     }
 
     .close-btn {
-      background: linear-gradient(to right, #d90000, #ff5252);
+      background: var(--close-btn-bg);
       color: white;
       border: none;
       padding: 12px 30px;
@@ -342,21 +684,21 @@
       border-radius: 25px;
       margin-top: 20px;
       font-weight: bold;
-      transition: all 0.3s;
-      box-shadow: 0 4px 8px rgba(217,0,0,0.2);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(255, 0, 0, 0.4);
     }
 
     .close-btn:hover {
-      background: linear-gradient(to right, #b80000, #e53935);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(217,0,0,0.25);
+      background: var(--close-btn-hover-bg);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 12px rgba(255, 0, 0, 0.6);
     }
 
     .instagram-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
+      background: var(--instagram-btn-bg);
       color: white;
       border: none;
       padding: 12px 25px;
@@ -365,31 +707,130 @@
       border-radius: 25px;
       margin-top: 15px;
       font-weight: bold;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
       text-decoration: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
     .instagram-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(255, 0, 0, 0.6);
+      background: var(--instagram-btn-hover-bg);
     }
 
     .instagram-btn i {
-      margin-right: 8px;
+      margin-left: 8px;
+      margin-right: 0;
       font-size: 18px;
     }
+
+    /* New elements */
+    .header-icon {
+      font-size: 40px; /* Larger icon */
+      margin-bottom: 10px;
+      color: var(--header-icon-color);
+      text-shadow: 0 0 15px rgba(255, 0, 0, 0.7); /* Stronger red glow */
+      transition: color 0.5s ease-in-out;
+      animation: icon-float 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes icon-float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0); }
+    }
+
+    .result-display { /* Container for final average and hint, moved to bottom */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 30px; /* Added margin-top to separate from buttons */
+      /* Removed order: -1; */
+    }
+
+    .final-average {
+      padding: 10px 25px; /* Slightly adjusted padding */
+      border-radius: 10px; /* Slightly less rounded */
+      font-size: 28px; /* Larger font */
+      font-weight: 900; /* Bolder */
+      color: #FF0000; /* Bright Red color as requested */
+      text-shadow: 0 0 8px rgba(255,0,0,0.7); /* Red glow */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5); /* Stronger shadow */
+      transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
+      animation: pulse 2s infinite;
+      border: 2px solid #FF0000; /* Red border */
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); } /* Red pulse */
+      70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+    }
+
+    .average-hint {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--subheading-color);
+      direction: rtl;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: hint-fade-in 0.5s ease-out forwards;
+    }
+
+    @keyframes hint-fade-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive adjustments for grades-row */
+    @media (max-width: 480px) {
+      .grades-row .grade-input:not(.control-grade) {
+        width: calc(33.33% - 8px);
+      }
+      .final-row {
+        flex-direction: column;
+        align-items: center;
+      }
+      .calc-button {
+        width: 100%;
+        max-width: 250px;
+      }
+      h2 { font-size: 24px; } /* Adjust for smaller screens */
+      .terms-title { font-size: 26px; }
+      .final-average { font-size: 24px; } /* Adjust final average font size */
+    }
+    @media (max-width: 360px) {
+      .grades-row .grade-input:not(.control-grade) {
+        width: calc(50% - 8px);
+      }
+       .final-average { font-size: 22px; } /* Further adjust final average font size */
+    }
   </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  <!-- Main calculator content -->
+  <div class="animated-bg" id="animatedBgContainer">
+    </div>
+  <div class="rotation-message mobile-portrait">
+    <i class="fas fa-mobile-alt"></i> إذا كنت تستعمل هاتفا، اقلب الشاشة للحصول على أفضل تجربة.
+  </div>
+  <div class="rotation-message desktop-portrait" style="display: none;">
+    <i class="fas fa-desktop"></i> إذا كنت تستعمل شاشة طويلة، اقلب الشاشة للحصول على أفضل تجربة.
+  </div>
+
   <div class="container" id="mainContainer">
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-sun"></i>
+      <i class="fas fa-moon" style="display: none;"></i>
+      <span>Light Mode</span>
+    </button>
+
+    <div class="header-icon">
+      <i class="fas fa-calculator"></i>
+    </div>
     <h2>GRADE CALCULATOR</h2>
-    <h4>أدخل النقط في الخانات المخصصة</h4>
+    <h4 class="orientation-message">إذا كنت تستعمل شاشة طويلة اقلب الشاشة للحصول على أفضل تجربة</h4>
     
     <div id="subjectsContainer">
-      <!-- Subjects list -->
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">علوم المهندس</span>
@@ -400,12 +841,11 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-0">0.00</div>
       </div>
       
-      <!-- Other subjects -->
       <div class="subject-container">
         <div class="subject-header">
           <span class="subject-name">الاجتماعيات</span>
@@ -416,7 +856,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-1">0.00</div>
       </div>
@@ -431,7 +871,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-2">0.00</div>
       </div>
@@ -446,7 +886,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-3">0.00</div>
       </div>
@@ -461,7 +901,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-4">0.00</div>
       </div>
@@ -476,7 +916,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-5">0.00</div>
       </div>
@@ -491,7 +931,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-6">0.00</div>
       </div>
@@ -506,7 +946,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-7">0.00</div>
       </div>
@@ -521,7 +961,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-8">0.00</div>
       </div>
@@ -536,7 +976,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-9">0.00</div>
       </div>
@@ -551,7 +991,7 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-10">0.00</div>
       </div>
@@ -566,58 +1006,147 @@
           <input type="number" class="grade-input" placeholder="2" min="0" max="20">
           <input type="number" class="grade-input" placeholder="3" min="0" max="20">
           <input type="number" class="grade-input" placeholder="4" min="0" max="20">
-          <input type="number" class="grade-input" placeholder="مراقبة" min="0" max="20">
+          <input type="number" class="grade-input control-grade" placeholder="مراقبة" min="0" max="20">
         </div>
         <div class="subject-result" id="result-11">0.00</div>
       </div>
     </div>
 
-    <!-- Final result section -->
     <div class="final-row">
-      <button class="calc-button" onclick="calculateGrades()">Calculate</button>
-      <div class="final-result" id="finalAverageDisplay">Final Average: 0.00</div>
+      <button class="calc-button" onclick="calculateGrades()">
+        <i class="fas fa-calculator"></i> Calculate Average
+      </button>
+      <button class="terms-btn" id="termsBtn">?</button>
     </div>
 
-    <!-- Page footer -->
-    <div class="developer-note">by ADCH</div>
-    <button class="terms-btn" id="termsBtn">?</button>
-  </div>
+    <div class="result-display">
+        <div class="final-average" id="finalAverageDisplay" dir="rtl">المعدل النهائي: 0.00</div>
+        <div class="average-hint" id="averageHint"></div>
+    </div>
 
-  <!-- Terms modal (hidden by default) -->
-  <div class="terms-modal" id="termsModal">
+    </div> <div class="terms-modal" id="termsModal">
     <div class="terms-content">
-      <div class="terms-title">Terms and Instructions</div>
+      <div class="terms-title">Terms and Usage Instructions</div>
       
       <div class="terms-section">
-        <div class="terms-section-title">Tips:</div>
-        <div class="terms-text">
-          ¤ If you want to skip calculating assignments and calculate the subject average directly, enter the subject grade in any single field<br>
-          ¤ If you get unexpected results, double-check the data you entered<br>
-          ¤ If you're exempt from a subject (like التربية البدنية), don't enter any data for it<br>
+        <div class="terms-section-title tips"><i class="fas fa-lightbulb"></i> Tips:</div> <div class="terms-text">
+          . If you want to skip homework calculation and directly calculate the average, enter the grade in any field.<br>
+          . If you get unexpected results, check the entered data.<br>
+          . If you are exempt from a subject (e.g., Physical Education), do not enter any data for it.<br>
         </div>
       </div>
       
       <div class="terms-section">
-        <div class="terms-section-title">About:</div>
+        <div class="terms-section-title about"><i class="fas fa-info-circle"></i> About the Application:</div>
         <div class="terms-text">
-          ¤ The site is specially programmed for the first year of technological secondary school<br>
-          ¤ It follows the same calculation methods used by the official platform<br>
-          ¤ Most common errors found in similar apps have been corrected<br>
-          ¤ Developed with a personal touch by the creator
+          . The application was programmed specifically for the first year of technological secondary education.<br>
+          . It follows the same calculation methods used in the official platform.<br>
+          . Most common errors found in similar applications have been corrected.<br>
+          . Developed by the developer with a personal touch.
         </div>
       </div>
       
-      
-<a href="https://www.instagram.com/_ad__ch_?igsh=MWszOHdtczhraTF0Yw==" target="_blank" class="instagram-btn">
-  <i class="fab fa-instagram"></i>
-</a>
+      <a href="https://www.instagram.com/_ad__ch_?igsh=MWszOHdtczhraTF0Yw==" target="_blank" class="instagram-btn">
+        <i class="fab fa-instagram"></i> Instagram
+      </a>
 
-<button class="close-btn" id="closeBtn">Close</button>
-      <div class="terms-footer">Click anywhere outside this box to close</div>
+      <button class="close-btn" id="closeBtn">Close</button>
+      <div class="terms-footer">Click outside the box to close</div>
     </div>
   </div>
 
   <script>
+    // Function to set theme
+    function setTheme(theme) {
+      document.body.classList.remove('light-theme', 'dark-theme');
+      document.body.classList.add(theme + '-theme');
+      localStorage.setItem('theme', theme);
+
+      const sunIcon = document.querySelector('.theme-toggle .fa-sun');
+      const moonIcon = document.querySelector('.theme-toggle .fa-moon');
+      const themeText = document.querySelector('.theme-toggle span');
+
+      if (theme === 'light') {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'inline-block';
+        themeText.textContent = 'Dark Mode';
+      } else {
+        sunIcon.style.display = 'inline-block';
+        moonIcon.style.display = 'none';
+        themeText.textContent = 'Light Mode';
+      }
+    }
+    
+    // Function to create and animate background symbols
+    function createAnimatedBackground() {
+        const container = document.getElementById('animatedBgContainer');
+        if (!container) return;
+
+        const symbols = ['Σ', '∫', '∞', 'π', 'φ', '{', '}', '<', '>', '0', '1', '∴', '∵', '∀', '∃', '¬', '∧', '∨', '∈', '∉', '⊂', '⊃', '∪', '∩', '∂', '∇', 'α', 'β', 'γ', 'δ', 'λ', 'μ', 'ω', '⇌', '∴', '∵', 'const', 'let', 'var', '=>', 'if', 'else', 'for', 'while', 'ƒ(x)', 'E=mc²', 'AI', 'ML', 'Data', 'Code', 'Logic', 'Critique', 'Raison', 'Être', 'Idée', 'Savoir'];
+        const colors = ['#FF0000', '#FFFF00']; // Red and Yellow
+        const numSymbols = 50; // Number of symbols
+
+        for (let i = 0; i < numSymbols; i++) {
+            const span = document.createElement('span');
+            span.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            span.style.left = Math.random() * 100 + 'vw';
+            span.style.top = Math.random() * 100 + 'vh'; // Start at random vertical position
+            span.style.fontSize = (Math.random() * 15 + 10) + 'px'; // Random size between 10px and 25px
+            span.style.color = colors[Math.floor(Math.random() * colors.length)];
+            span.style.animationDelay = Math.random() * 20 + 's'; // Random delay for staggered animation
+            span.style.animationDuration = (Math.random() * 15 + 10) + 's'; // Random duration
+            container.appendChild(span);
+        }
+    }
+
+
+    // Initialize theme on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      setTheme(savedTheme);
+      createAnimatedBackground(); // Create the animated background
+      calculateGrades(); // Initialize calculator on load
+      checkOrientationMessage(); // Check and display orientation message
+
+      // Removed the JavaScript line that moved the result-display to the top
+      // const mainContainer = document.getElementById('mainContainer');
+      // const resultDisplay = document.querySelector('.result-display');
+      // if (mainContainer && resultDisplay) {
+      //     mainContainer.insertBefore(resultDisplay, mainContainer.firstChild);
+      // }
+    });
+
+    // Theme toggle button functionality
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const currentTheme = localStorage.getItem('theme');
+      if (currentTheme === 'dark') {
+        setTheme('light');
+      } else {
+        setTheme('dark');
+      }
+    });
+
+    // Function to check and display orientation message
+    function checkOrientationMessage() {
+      const mobilePortraitMessage = document.querySelector('.rotation-message.mobile-portrait');
+      const desktopPortraitMessage = document.querySelector('.rotation-message.desktop-portrait');
+      
+      if (window.innerWidth <= 768 && window.innerHeight > window.innerWidth) { // Mobile portrait
+        mobilePortraitMessage.style.display = 'block';
+        desktopPortraitMessage.style.display = 'none';
+      } else if (window.innerWidth > 768 && window.innerHeight > window.innerWidth) { // Desktop portrait (long screen)
+        mobilePortraitMessage.style.display = 'none';
+        desktopPortraitMessage.style.display = 'block';
+      } else { // Landscape or square
+        mobilePortraitMessage.style.display = 'none';
+        desktopPortraitMessage.style.display = 'none';
+      }
+    }
+
+    // Listen for orientation changes and resize events
+    window.addEventListener('orientationchange', checkOrientationMessage);
+    window.addEventListener('resize', checkOrientationMessage);
+
     // Calculator code
     function calculateGrades() {
       const subjects = document.querySelectorAll('.subject-container');
@@ -625,7 +1154,8 @@
 
       subjects.forEach((subject, index) => {
         const inputs = subject.querySelectorAll('.grade-input');
-        const coefficient = parseFloat(subject.querySelector('.subject-coefficient').textContent.split(':')[1].trim());
+        const coefficientText = subject.querySelector('.subject-coefficient').textContent;
+        const coefficient = parseFloat(coefficientText.match(/\d+/)[0]);
         let sumGrades = 0, countGrades = 0;
 
         inputs.forEach(input => {
@@ -637,8 +1167,39 @@
         });
 
         const subjectAvg = countGrades > 0 ? (sumGrades / countGrades) : 0;
-        document.getElementById(`result-${index}`).textContent = subjectAvg.toFixed(2);
+        const resultElement = document.getElementById(`result-${index}`);
+        resultElement.textContent = subjectAvg.toFixed(2);
+        
+        if (countGrades === 0 && Array.from(inputs).some(input => input.value.trim() !== '')) {
+            const allInputsEmptyOrInvalid = Array.from(inputs).every(input => isNaN(parseFloat(input.value)) || parseFloat(input.value) < 0 || parseFloat(input.value) > 20);
+            if (allInputsEmptyOrInvalid) {
+                resultElement.textContent = 'أدخل نقاط!'; 
+                resultElement.classList.add('warning');
+            } else {
+                resultElement.classList.remove('warning');
+            }
+        } else if (countGrades === 0) {
+            resultElement.textContent = '0.00'; 
+            resultElement.classList.remove('warning');
+        } else {
+            resultElement.classList.remove('warning');
+        }
 
+
+        if (subjectAvg >= 16 && countGrades > 0) {
+          resultElement.style.background = 'var(--grade-high-bg)';
+          resultElement.style.color = 'white';
+        } else if (subjectAvg >= 10 && countGrades > 0) {
+          resultElement.style.background = 'var(--grade-medium-bg)';
+          resultElement.style.color = 'white';
+        } else if (subjectAvg > 0 && countGrades > 0) { 
+          resultElement.style.background = 'var(--grade-low-bg)';
+          resultElement.style.color = 'white';
+        } else {
+          resultElement.style.background = 'var(--subject-result-bg)'; 
+          resultElement.style.color = 'var(--text-color)'; 
+        }
+        
         if (countGrades > 0) {
           totalWeighted += subjectAvg * coefficient;
           totalCoefficient += coefficient;
@@ -646,15 +1207,45 @@
       });
 
       const finalAverage = totalCoefficient ? (totalWeighted / totalCoefficient).toFixed(2) : '0.00';
-      document.getElementById('finalAverageDisplay').textContent = 'Final Average: ' + finalAverage;
+      const finalElement = document.getElementById('finalAverageDisplay');
+      finalElement.textContent = 'المعدل النهائي: ' + finalAverage;
+      
+      // Color coding for final grade (using background as before, text is already red)
+      const numericFinalAverage = parseFloat(finalAverage);
+      if (numericFinalAverage >= 16) {
+        finalElement.style.backgroundColor = 'var(--grade-high-bg)'; // Keep text red, change background
+      } else if (numericFinalAverage >= 10) {
+        finalElement.style.backgroundColor = 'var(--grade-medium-bg)';
+      } else if (numericFinalAverage > 0) {
+        finalElement.style.backgroundColor = 'var(--grade-low-bg)';
+      } else {
+         finalElement.style.backgroundColor = 'var(--final-average-bg)'; // Default background if 0.00
+      }
+      // Ensure text color remains red if a background is applied
+      finalElement.style.color = '#FF0000';
+
+
+      const averageHintElement = document.getElementById('averageHint');
+      const decimalPart = numericFinalAverage - Math.floor(numericFinalAverage);
+      let hintText = '';
+
+      if (decimalPart < 0.30 && numericFinalAverage > 0) {
+        const previousInteger = Math.floor(numericFinalAverage);
+        hintText = `شويا على ${previousInteger}`;
+      } else if (decimalPart > 0.70 && numericFinalAverage > 0) {
+        const nextInteger = Math.ceil(numericFinalAverage);
+        hintText = `شويا على ${nextInteger}`;
+      }
+
+      averageHintElement.textContent = hintText;
+      averageHintElement.style.opacity = hintText ? '1' : '0';
+      averageHintElement.style.transform = hintText ? 'translateY(0)' : 'translateY(10px)';
     }
 
-    // Calculate when leaving input field
     document.querySelectorAll('.grade-input').forEach(input => {
       input.addEventListener('blur', calculateGrades);
     });
 
-    // Prevent form submission on Enter
     document.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
@@ -662,35 +1253,46 @@
       }
     });
 
-    // Validate inputs
     document.querySelectorAll('.grade-input').forEach(input => {
       input.addEventListener('input', function() {
-        if (this.value > 20) {
+        let value = parseFloat(this.value);
+        if (isNaN(value)) {
+          this.value = ''; 
+          calculateGrades(); 
+          return;
+        }
+        
+        if (value > 20) {
           this.value = 20;
-        } else if (this.value < 0) {
+        } else if (value < 0) {
           this.value = 0;
         }
+        calculateGrades(); 
       });
     });
 
-    // Terms modal functionality
     const termsModal = document.getElementById('termsModal');
     const termsBtn = document.getElementById('termsBtn');
     const closeBtn = document.getElementById('closeBtn');
 
     termsBtn.addEventListener('click', function() {
       termsModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
     });
 
     closeBtn.addEventListener('click', function() {
       termsModal.style.display = 'none';
+      document.body.style.overflow = 'auto';
     });
 
     termsModal.addEventListener('click', function(e) {
       if (e.target === termsModal) {
         termsModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
       }
     });
+
+    // Study Tips Modal functionality removed
   </script>
 </body>
 </html>
